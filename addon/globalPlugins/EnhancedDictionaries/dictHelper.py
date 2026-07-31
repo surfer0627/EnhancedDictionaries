@@ -110,6 +110,44 @@ def _rebuildVoiceMemorySource(synth=None):
 		memorySource.syncFrom(globalDict)
 
 
+def getInheritedDictionarySnapshot(dictionaryType):
+	if dictionaryType not in ("default", "voice"):
+		raise ValueError(f"Unsupported dictionary type: {dictionaryType!r}")
+
+	profile = config.conf.getActiveProfile()
+	snapshot = SpeechDict()
+
+	# The normal profile edits the global dictionary directly, so it has no
+	# separate inherited source.
+	if not profile.name:
+		return snapshot
+
+	if dictionaryType == "default":
+		fileName = WritePaths.speechDictDefaultFile
+	else:
+		fileName = _getGlobalVoiceDictionaryFileName()
+		if fileName is None:
+			return snapshot
+
+	snapshot.load(fileName)
+	return snapshot
+
+
+def _getGlobalVoiceDictionaryFileName():
+	from synthDriverHandler import getSynth
+
+	synth = getSynth()
+	if synth is None:
+		return None
+
+	baseName = _getVoiceDictionaryFileName(synth)
+	return os.path.join(
+		WritePaths.voiceDictsDir,
+		synth.name,
+		baseName,
+	)
+
+
 # ---------------------------------------------------------------------------
 # Editable dictionaries (what the dialog shows and saves).
 #
