@@ -117,7 +117,10 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		# linting is complaining about from .settingsDialogs import * names
 		# too risky to change it all, so we will specify what we want on a method based aproach
 		dic = dictHelper.getDictionary("default")
-		guiHelper.showEnhancedDictionaryDialog(dic)
+		guiHelper.showEnhancedDictionaryDialog(
+			dic,
+			dictionaryType="default",
+		)
 
 	def onVoiceDictionaryCommand(self, evt):
 		from synthDriverHandler import getSynth
@@ -130,4 +133,8 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		# too risky to change it all, so we will specify what we want on a method based aproach
 		dic = dictHelper.getDictionary("voice")
 		# Translators: Title for voice dictionary for the current voice such as current eSpeak variant.
-		guiHelper.showEnhancedDictionaryDialog(dic, __("Voice dictionary (%s)") % voiceName)
+		guiHelper.showEnhancedDictionaryDialog(
+			dic,
+			title=__("Voice dictionary (%s)") % voiceName,
+			dictionaryType="voice",
+		)
